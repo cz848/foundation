@@ -1,27 +1,37 @@
 module.exports = function(grunt) {
-
-    grunt.loadNpmTasks('grunt-contrib-qunit');
-    grunt.loadNpmTasks('grunt-contrib-watch');
-
-    grunt.initConfig({
-      qunit: {
-        all: ['test/javascripts/tests/**/*.html']
+  // Define project configuration
+  var project = {
+    paths: {
+      get config() {
+        return this.grunt + 'config/';
       },
-      watch: {
-        all: {
-            files: [
-                'test/javascripts/tests/**/*.html',
-                'test/javascripts/tests/**/*.js',
-                'lib/assets/javascripts/foundation/*.js'
-            ],
-            tasks: 'default',
-            options: {
-                interrupt: true
-            }
-        }
-      }
-    });
+      dist: 'dist/',
+      doc: 'doc/',
+      grunt: 'grunt/',
+      js: 'js/',
+      sassLoad: __dirname + '/scss',
+      scss: 'scss/',
+      spec: 'spec/',
+      vendor: grunt.file.readJSON('.bowerrc').directory + '/'
+    },
+    files: {
+      get config() {
+        return project.paths.config + '*.js';
+      },
+      grunt: 'Gruntfile.js',
+      js: ['js/foundation/foundation.js', 'js/foundation/*.js'],
+      scss: ['scss/foundation.scss', 'scss/settings.scss']
+    },
+    pkg: grunt.file.readJSON('package.json')
+  };
 
-    // Default task.
-    grunt.registerTask('default', ['qunit']);
+  // Load Grunt configurations and tasks
+  require('load-grunt-config')(grunt, {
+    configPath: require('path').join(process.cwd(), project.paths.config),
+    data: project,
+    jitGrunt: {
+      staticMappings: {
+      }
+    }
+  });
 };
